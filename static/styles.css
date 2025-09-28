@@ -1,0 +1,43 @@
+body {
+    background-color: #F3F4F6;
+    font-family: Arial, Helvetica, sans-serif;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+.nvb {
+    background-color: white;
+    height: 75px;
+    width: 100%;
+}
+
+.right {
+    margin-right: 45px;
+}
+
+.rbtn {
+    height: 50px;
+    width: 100px;
+    border: none;
+    outline: none;
+    border-radius: 20px;
+    font-size: 22px;
+    margin-right: 30px;
+    color: white;
+}
+
+.loginBtn {
+    background-color: #6366F1;
+}
+
+.createFC {
+    color: #6366F1;
+    background-color: transparent;
+}
+
+.logo {
+    height: 50px;
+    margin-left: 125px;
+    scale: 4;
+    cursor: pointer;
+}
