@@ -1,0 +1,54 @@
+body {
+    background-color: #F3F4F6;
+    font-family: Arial, Helvetica, sans-serif;
+    -webkit-user-drag: none;
+}
+
+.enter {
+    text-align: center;
+    font-weight: bolder;
+    margin-top: 250px;
+}
+
+.promptCon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50vh;
+    width: 100%;
+}
+
+.prompt {
+    width: 850px;
+    height: 55px;
+    border-radius: 20px;
+    padding-left: 25px;
+    border: none;
+    outline: none;
+    font-size: 20px;
+    background-color: rgb(224, 223, 223);
+}
+
+.prompt::placeholder {
+    color: black;
+}
+
+
+.cards {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100%;
+    backdrop-filter: blur(10px);
+    background: rgba(0, 0, 0, 0.2);
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.card {
+    height: 300px;
+    width: 150px;
+    background-color: red;
+}

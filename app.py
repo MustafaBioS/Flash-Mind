@@ -1,9 +1,11 @@
-from flask import Flask, flash, redirect, render_template, request, url_for
+import re
+from flask import Flask, flash, json, redirect, render_template, request, url_for
 from flask_sqlalchemy import SQLAlchemy
+import requests
 from sqlalchemy import exc
 from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
-from flask_login import LoginManager, UserMixin, login_required, login_user, current_user
+from flask_login import LoginManager, UserMixin, login_required, login_user, current_user, logout_user
 
 # INITIALIZATION
 
@@ -37,13 +39,16 @@ def load_user(user_id):
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    if current_user.is_authenticated:
+        return redirect(url_for('create'))
+    else:
+        return render_template('index.html')
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
 
     if current_user.is_authenticated:
-        return redirect(url_for('home'))
+        return redirect(url_for('create'))
 
     if request.method == 'GET':
         return render_template('signup.html')
@@ -74,7 +79,7 @@ def signup():
 def login():
 
     if current_user.is_authenticated:
-        return redirect(url_for('home'))
+        return redirect(url_for('create'))
 
     if request.method == 'GET':
         return render_template('login.html')
@@ -92,6 +97,12 @@ def login():
             flash("Incorrect Credentials", 'danger')
             return redirect(url_for('login'))
 
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash("Successfully Logged Out", 'success')
+    return redirect(url_for('home'))
 
 @app.route('/create', methods=['GET', 'POST'])
 def create():
@@ -100,7 +111,33 @@ def create():
     if request.method == 'GET':
         return render_template('create.html')
     if request.method == 'POST':
-        pass
+        prompt = request.form.get('prompt')
+
+        url = "https://ai.hackclub.com/chat/completions"
+
+        data = {
+            "model": "gpt-4o-mini",
+            "messages": [
+
+                {"role": "system", "content": "you are a helpful assistant that gives ten, four choices flashcard questions to users, if they don't specify a known subject or something unclear please tell them so AND ONLY outputs JSON with exactly this structure: {\"questions\": [{\"question\": \"...\", \"choices\": [\"...\",\"...\",\"...\",\"...\"], \"answer\": \"...\"}]} Do not include explanations, markdown, or any extra text.."},
+
+                {"role": "user", "content": prompt}
+            ]
+        }
+
+        response = requests.post(url, json=data)
+        ai_reply = response.json()["choices"][0]["message"]["content"].strip()
+
+        json_match = re.search(r'\{.*\}', ai_reply, re.DOTALL)
+        if json_match:
+            ai_reply = json_match.group(0)
+
+        try:
+            flashcards = json.loads(ai_reply)
+        except Exception as e:
+            flashcards = {"error": "AI did not return valid JSON", "raw": ai_reply}
+
+        return render_template('create.html', flashcards=flashcards)
 
 
 # RUNNING

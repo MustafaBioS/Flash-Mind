@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" sizes="32x32" href="../static/9145670.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='create.css')}}"> 
+    <title>Create FlashCard</title>
+</head>
+<body>
+
+    <h1 class="enter">Enter a subject to generate flash cards about.</h1>
+    <form class="promptCon" action="{{ url_for('create', flashcards=flashcards) }}" method="post">
+        <input class="prompt" type="text" placeholder="Enter a subject" name="prompt">
+        <input type="submit">
+    </form>
+
+    <div class="cards">
+        {% if flashcards.questions %}
+            {% for q in flashcards.questions %}
+            <div class="card">
+                <p><strong>Q{{ loop.index }}:</strong> {{ q.question }}</p>
+                <ul>
+                    {% for choice in q.choices %}
+                    <li>{{ choice }}</li>
+                    {% endfor %}
+                    </ul>
+                    <p><em>Answer: {{ q.answer }}</em></p>
+                    </div>
+                {% endfor %}
+                {% elif flashcards.error %}
+                <p>Error: {{ flashcards.error }}</p>
+            <pre>{{ flashcards.raw }}</pre>
+        {% endif %}
+    </div>
+
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flashCon">
+            {% for category, message in messages %}
+                <div class="flash {{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+
+    {% if flashcards.questions %}
+    <script>
+        window.flashcards = {{ flashcards | tojson | safe }};
+    </script>
+    {% endif %}
+
+
+    <script>
+
+
+    </script>
+</body>
+</html>

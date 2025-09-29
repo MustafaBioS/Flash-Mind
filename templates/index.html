@@ -23,7 +23,14 @@
     </nav>
 
     <div class="main">
-        <h1 class="titled">How do you want to study?</h1>
+        <h1 class="titled">Master Anything, One Flashcard at a Time.</h1>
+        <p class="desc">Master whatever you're learning with FlashMind's interactive AI flashcards.</p>
+        <button class="signupBtn rbtn">Sign Up</button>
+        <div class="s1">
+            <p class="imgdesc">Stuck while studying? No problem, use FlashMind's AI flash cards to generate multiple choice questions.</p>
+            <img src="../static/question-70.png" alt="Confused" class="cimg">
+        </div>
+        <button class="tryit rbtn">Try it out</button>
     </div>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
@@ -40,21 +47,29 @@
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
     <script>
-        const logo = document.querySelector('.logo');
-        const loginBtn = document.querySelector('.loginBtn');
-        const createFC = document.querySelector('.createFC');
+        document.addEventListener('DOMContentLoaded', ()=> {
+            const logo = document.querySelector('.logo');
+            const loginBtn = document.querySelector('.loginBtn');
+            const createFC = document.querySelector('.createFC');
+            const trybtn = document.querySelector('.tryit');
 
-        logo.addEventListener('click', ()=> {
-            window.location.href = "{{ url_for('home') }}"
+            trybtn.addEventListener('click', ()=> {
+                window.location.href = "{{ url_for('create') }}"
+            })
+
+            logo.addEventListener('click', ()=> {
+                window.location.href = "{{ url_for('home') }}"
+            });
+
+                loginBtn.addEventListener('click', ()=> {
+                    window.location.href = "{{ url_for('login') }}"
+                });
+
+            createFC.addEventListener('click', ()=> {
+                window.location.href = "{{ url_for('create') }}"
+            });
         });
 
-        loginBtn.addEventListener('click', ()=> {
-            window.location.href = "{{ url_for('login') }}"
-        })
-
-        createFC.addEventListener('click', ()=> {
-            window.location.href = "{{ url_for('create') }}"
-        })
 
     </script>
 </body>
