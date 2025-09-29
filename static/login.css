@@ -45,6 +45,7 @@ body {
     padding-left: 20px;
     background-color: #d2d6df;
     font-size: 19px;
+    z-index: 5;
 }
 
 .inp::placeholder {
@@ -76,7 +77,12 @@ body {
 .login {
     text-decoration: underline wavy #EAB308;
     text-decoration-skip-ink: none;
+    z-index: 5;
     
+}
+
+.signup {
+    z-index: 5;
 }
 
 .submitBtn {
@@ -91,8 +97,37 @@ body {
     font-weight: 600;
     color: white;
     transition: all 0.3s ease;
+    z-index: 5;
 }
 
 .submitBtn:hover {
     opacity: 0.6;
+}
+
+.flashCon {
+    height: 99vh;
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    position: absolute;
+}
+
+.flash {
+    font-size: 20px;
+    font-weight: bold;
+    border-radius: 50px;
+    padding: 20px;
+    margin: 25px;
+    position: absolute;
+}
+
+.success {
+    background-color: green;
+    color: white;
+}
+
+.danger {
+    background-color: red;
+    color: white;
 }

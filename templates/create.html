@@ -19,15 +19,15 @@
         </div>
         
         <div class="right fluid-container">
-            <button class="settingsBtn">Settings</button>
+            <button class="settingsBtn">Logout</button>
         </div>
     </nav>
 
 
     <h1 class="enter">Enter a subject to generate flash cards about.</h1>
     <form class="promptCon" action="{{ url_for('create') }}" method="post">
-        <input class="prompt" type="text" placeholder="Enter a subject" name="prompt">
-        <input type="submit">
+        <input class="prompt" type="text" placeholder="Enter a subject" name="prompt" required>
+        <input type="submit" class="sbmt" value="➤">
     </form>
 
     <div class="cards">
@@ -58,7 +58,7 @@
     const settingsBtn = document.querySelector('.settingsBtn');
 
     settingsBtn.addEventListener('click', ()=> {
-        window.location.href = "{{url_for('settings')}}"
+        window.location.href = "{{url_for('logout')}}"
     });
 
   console.log("Loaded flashcards:", window.flashcards);

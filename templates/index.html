@@ -52,6 +52,11 @@
             const loginBtn = document.querySelector('.loginBtn');
             const createFC = document.querySelector('.createFC');
             const trybtn = document.querySelector('.tryit');
+            const signupBtn = document.querySelector('.signupBtn');
+
+            signupBtn.addEventListener('click', ()=> {
+                window.location.href = "{{ url_for('signup')}}"
+            })
 
             trybtn.addEventListener('click', ()=> {
                 window.location.href = "{{ url_for('create') }}"

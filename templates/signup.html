@@ -23,11 +23,11 @@
 
         <form action="{{ url_for('signup') }}" method="post" class="formcon">
             <label class="lb">Username</label>
-            <input type="text" placeholder="Andrew123" class="username inp form-control" name="username" minlength="8" maxlength="26">
+            <input type="text" placeholder="Andrew123" class="username inp form-control" name="username" minlength="8" maxlength="26" required>
             <label class="lb">Password</label>
-            <input type="password" placeholder="••••••••" class="password inp form-control" name="password" minlength="8" maxlength="26">
+            <input type="password" placeholder="••••••••" class="password inp form-control" name="password" minlength="8" maxlength="26" required>
             <label class="lb clb">Confirm Password</label>
-            <input type="password" placeholder="Confirm Password" class="password inp form-control" name="cpassword">
+            <input type="password" placeholder="Confirm Password" class="password inp form-control" name="cpassword" required>
             <input type="submit" class="submitBtn" value="Log in">
         </form>
     </div>
