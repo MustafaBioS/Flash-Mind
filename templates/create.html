@@ -9,32 +9,29 @@
     <title>Create FlashCard</title>
 </head>
 <body>
+    <nav class="nvb navbar fluid-container">
+        <div class="left">
+
+        </div>
+
+        <div class="center">
+
+        </div>
+        
+        <div class="right fluid-container">
+            <button class="settingsBtn">Settings</button>
+        </div>
+    </nav>
+
 
     <h1 class="enter">Enter a subject to generate flash cards about.</h1>
-    <form class="promptCon" action="{{ url_for('create', flashcards=flashcards) }}" method="post">
+    <form class="promptCon" action="{{ url_for('create') }}" method="post">
         <input class="prompt" type="text" placeholder="Enter a subject" name="prompt">
         <input type="submit">
     </form>
 
     <div class="cards">
-        {% if flashcards.questions %}
-            {% for q in flashcards.questions %}
-            <div class="card">
-                <p><strong>Q{{ loop.index }}:</strong> {{ q.question }}</p>
-                <ul>
-                    {% for choice in q.choices %}
-                    <li>{{ choice }}</li>
-                    {% endfor %}
-                    </ul>
-                    <p><em>Answer: {{ q.answer }}</em></p>
-                    </div>
-                {% endfor %}
-                {% elif flashcards.error %}
-                <p>Error: {{ flashcards.error }}</p>
-            <pre>{{ flashcards.raw }}</pre>
-        {% endif %}
     </div>
-
 
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -50,16 +47,141 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 
-    {% if flashcards.questions %}
     <script>
-        window.flashcards = {{ flashcards | tojson | safe }};
+        window.flashcards = {{ flashcards | default({}) | tojson | safe }};
+        console.log("Loaded flashcards:", window.flashcards);
+        console.log("First question object:", window.flashcards.questions[0]);
     </script>
-    {% endif %}
 
+  <script>
 
-    <script>
+    const settingsBtn = document.querySelector('.settingsBtn');
 
+    settingsBtn.addEventListener('click', ()=> {
+        window.location.href = "{{url_for('settings')}}"
+    });
 
+  console.log("Loaded flashcards:", window.flashcards);
+  if (window.flashcards && Array.isArray(window.flashcards.questions) && window.flashcards.questions.length) {
+    console.log("First question object:", window.flashcards.questions[0]);
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const cardsContainer = document.querySelector(".cards");
+    const form = document.querySelector(".promptCon");
+
+    if (!cardsContainer) {
+      console.error("No .cards container found.");
+      return;
+    }
+
+    cardsContainer.innerHTML = "";
+
+    if (form) {
+      form.addEventListener("submit", () => {
+        cardsContainer.style.display = "flex";
+        cardsContainer.innerHTML = `<div class="alert alert-secondary">Generating flashcards…</div>`;
+      });
+    }
+
+    const questions = Array.isArray(window.flashcards?.questions) ? window.flashcards.questions : [];
+    if (questions.length === 0) {
+      console.log("No questions to show right now.");
+      return;
+    }
+
+    let index = 0;
+    function renderCard(i) {
+      const q = questions[i];
+      cardsContainer.innerHTML = "";
+      cardsContainer.style.display = "flex";
+
+      const card = document.createElement("div");
+      card.className = "card p-3 mb-3 shadow";
+      card.style.opacity = "1";
+
+      const choicesHtml = (q.choices || []).map((c, ci) =>
+        `<button class="choice btn btn-outline-primary m-1" type="button" data-choice-index="${ci}">${String(c)}</button>`
+      ).join("");
+
+      card.innerHTML = `
+        <p class='qnum'><strong>Q${i + 1}:</strong> ${q.question}</p>
+        <div class="choiceCon">${choicesHtml}</div>
+        <p class="answer text-success mt-2" style="display:none;"></p>
+        <div class="card-footer mt-3">
+          <button type="button" class="next-btn btn btn-dark" disabled>Next Question</button>
+        </div>
+      `;
+
+      cardsContainer.appendChild(card);
+
+      const choiceButtons = Array.from(card.querySelectorAll(".choice"));
+      const answerEl = card.querySelector(".answer");
+      const nextBtn = card.querySelector(".next-btn");
+      let autoAdvanceTimer = null;
+
+      choiceButtons.forEach(btn => {
+        btn.addEventListener("click", () => {
+          choiceButtons.forEach(b => b.disabled = true);
+          const btnText = btn.textContent.trim();
+          const answerText = (q.answer ?? "").toString().trim();
+          answerEl.textContent = `Answer: ${q.answer}`;
+          answerEl.style.display = "block";
+
+          if (btnText === answerText) {
+            btn.classList.remove("btn-outline-primary");
+            btn.classList.add("btn-success");
+          } else {
+            btn.classList.remove("btn-outline-primary");
+            btn.classList.add("btn-danger");
+            const correctBtn = choiceButtons.find(b => b.textContent.trim() === answerText);
+            if (correctBtn) {
+              correctBtn.classList.remove("btn-outline-primary");
+              correctBtn.classList.add("btn-success");
+            }
+          }
+
+          nextBtn.disabled = false;
+          autoAdvanceTimer = setTimeout(() => doAdvance(card), 900);
+        });
+      });
+
+      nextBtn.addEventListener("click", () => {
+        if (autoAdvanceTimer) {
+          clearTimeout(autoAdvanceTimer);
+          autoAdvanceTimer = null;
+        }
+        doAdvance(card);
+      });
+
+      function doAdvance(cardEl) {
+        cardEl.style.transition = "opacity 180ms ease";
+        cardEl.offsetHeight;
+        cardEl.style.opacity = "0";
+
+        const onEnd = (ev) => {
+          if (ev.target !== cardEl) return;
+          cardEl.removeEventListener("transitionend", onEnd);
+          index++;
+          if (index < questions.length) renderCard(index);
+          else cardsContainer.innerHTML = `<div class="alert alert-info">You've completed all questions!</div>`;
+        };
+
+        cardEl.addEventListener("transitionend", onEnd, { once: true });
+
+        setTimeout(() => {
+          if (document.body.contains(cardEl)) {
+            cardEl.removeEventListener("transitionend", onEnd);
+            index++;
+            if (index < questions.length) renderCard(index);
+            else cardsContainer.innerHTML = `<div class="alert alert-info">You've completed all questions!</div>`;
+          }
+        }, 400);
+      }
+    }
+
+    if (questions.length) renderCard(0);
+  });
     </script>
 </body>
 </html>

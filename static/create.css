@@ -35,7 +35,7 @@ body {
 
 
 .cards {
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
     height: 100vh;
@@ -48,7 +48,56 @@ body {
 }
 
 .card {
-    height: 300px;
-    width: 150px;
-    background-color: red;
+    height: 600px;
+    width: 400px;
+    background-color: black;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.close {
+    font-size: 60px;
+    font-weight: bolder;
+    position: fixed;
+
+}
+
+.qnum {
+    font-size: 25px;
+    color: white;
+    text-align: center;
+}
+
+.choiceCon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.answer {
+    font-size: 20px;
+    font-weight: bold;
+    transform: translateY(200px);
+}
+
+.settingsBtn {
+    border: none;
+    outline: none;
+    border-radius: 20px;
+    color: white;
+    background-color: #6366F1;
+    font-size: 24px;
+    height: 45px;
+    width: 125px;
+    margin-right: 50px;
+    margin-top: 10px;
+    transition: all 0.3s ease;
+}
+
+.settingsBtn:hover {
+    transform: translateY(-6px);
+    background-color: black;
+    color: white;
 }

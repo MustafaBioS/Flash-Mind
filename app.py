@@ -139,6 +139,12 @@ def create():
 
         return render_template('create.html', flashcards=flashcards)
 
+@app.route('/settings')
+@login_required
+def settings():
+    if request.method == 'GET':
+        return render_template('settings.html')
+    
 
 # RUNNING
 
